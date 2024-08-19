@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interact.js ドラッグ＆ドロップテスト</title>
+  <style>
+    .flex-box {
+      display: flex;
+      flex-direction: column;
+    }
+    .dropzone {
+      width: 200px;
+      height: 200px;
+      margin: 20px;
+      padding: 10px;
+      border: 2px dashed #ccc;
+      display: inline-block;
+      vertical-align: top;
+      position: relative;
+      text-align: center;
+      line-height: 180px;
+      font-size: 16px;
+      color: #7f8c8d;
+    }
+    .draggable {
+      width: 150px;
+      height: 150px;
+      background-color: #3498db;
+      color: white;
+      text-align: center;
+      line-height: 100px;
+      cursor: move;
+      border-radius: 4px;
+      position: absolute;
+      z-index: 10;
+      transform: translate(0, 0);
+      padding: 10px;
+      box-sizing: border-box;
+      transition: transform 0.3s ease;
+    }
+    .draggable.dragging {
+      z-index: 1000;
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex-box">
+    <div class="dropzone" id="dropzone1">
+      <div class="draggable" id="draggable1">ドラッグ1</div>
+    </div>
+    <div class="dropzone" id="dropzone2">
+      <div class="draggable" id="draggable2">ドラッグ2</div>
+    </div>
+    <div class="dropzone" id="dropzone3">
+      <div class="draggable" id="draggable3">ドラッグ3</div>
+    </div>
+    <div class="dropzone" id="dropzone4">
+      <div class="draggable" id="draggable4">ドラッグ4</div>
+    </div>
+    <div class="dropzone" id="dropzone5">
+      <div class="draggable" id="draggable5">ドラッグ5</div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <script>
+    interact('.draggable')
+      .draggable({
+        inertia: true,
+        listeners: {
+          start(event) {
+            event.target.classList.add('dragging');
+            // ドラッグ開始時の親ドロップゾーンを記憶
+            const parentDropzone = event.target.closest('.dropzone');
+            event.target.setAttribute('data-original-parent', parentDropzone.id);
+          },
+          move(event) {
+            const target = event.target;
+            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+            target.style.transform = `translate(${x}px, ${y}px)`;
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+          },
+          end(event) {
+            const target = event.target;
+            const dropzone = document.elementFromPoint(event.clientX, event.clientY).closest('.dropzone');
+
+            if (!dropzone) {
+              // dropzone外にドロップされた場合、元の位置に戻す
+              resetElement(target);
+            }
+            target.classList.remove('dragging');
+          }
+        }
+      });
+
+    interact('.dropzone').dropzone({
+      accept: '.draggable',
+      overlap: 0.5,
+      ondrop(event) {
+        const draggableElement = event.relatedTarget;
+        const dropzoneElement = event.target;
+
+        // ドロップゾーンにすでに他の要素がある場合は、ドラッグされた要素と入れ替え
+        const existingElement = dropzoneElement.querySelector('.draggable');
+        if (existingElement && existingElement !== draggableElement) {
+          const parentDropzone = draggableElement.closest('.dropzone');
+          parentDropzone.appendChild(existingElement);
+          resetElement(existingElement);
+        }
+
+        dropzoneElement.appendChild(draggableElement);
+        resetElement(draggableElement);
+      }
+    });
+
+    function resetElement(element) {
+      // 元の位置に戻す
+      element.style.transform = 'translate(0, 0)';
+      element.setAttribute('data-x', 0);
+      element.setAttribute('data-y', 0);
+    }
+  </script>
+</body>
+</html>
