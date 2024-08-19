@@ -43,24 +43,63 @@
       z-index: 1000;
       background-color: red;
     }
+    .draggable.hidden {
+      visibility: hidden;
+    }
+    .hide-button, .show-button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .show-button {
+      display: none;
+      visibility: visible;
+      background-color: #2ecc71;
+    }
   </style>
 </head>
 <body>
   <div class="flex-box">
     <div class="dropzone" id="dropzone1">
-      <div class="draggable" id="draggable1">ドラッグ1</div>
+      <div class="draggable" id="draggable1">
+        ドラッグ1
+        <button class="hide-button">非表示</button>
+        <button class="show-button">表示</button>
+      </div>
     </div>
     <div class="dropzone" id="dropzone2">
-      <div class="draggable" id="draggable2">ドラッグ2</div>
+      <div class="draggable" id="draggable2">
+        ドラッグ2
+        <button class="hide-button">非表示</button>
+        <button class="show-button">表示</button>
+      </div>
     </div>
     <div class="dropzone" id="dropzone3">
-      <div class="draggable" id="draggable3">ドラッグ3</div>
+      <div class="draggable" id="draggable3">
+        ドラッグ3
+        <button class="hide-button">非表示</button>
+        <button class="show-button">表示</button>
+      </div>
     </div>
     <div class="dropzone" id="dropzone4">
-      <div class="draggable" id="draggable4">ドラッグ4</div>
+      <div class="draggable" id="draggable4">
+        ドラッグ4
+        <button class="hide-button">非表示</button>
+        <button class="show-button">表示</button>
+      </div>
     </div>
     <div class="dropzone" id="dropzone5">
-      <div class="draggable" id="draggable5">ドラッグ5</div>
+      <div class="draggable" id="draggable5">
+        ドラッグ5
+        <button class="hide-button">非表示</button>
+        <button class="show-button">表示</button>
+      </div>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
@@ -123,6 +162,24 @@
       element.setAttribute('data-x', 0);
       element.setAttribute('data-y', 0);
     }
+
+    // 非表示ボタンのクリックイベント
+    document.querySelectorAll('.hide-button').forEach(button => {
+      button.addEventListener('click', function(event) {
+        const draggableElement = this.closest('.draggable');
+        draggableElement.classList.add('hidden'); // 非表示クラスを追加
+        draggableElement.querySelector('.show-button').style.display = 'inline-block';
+      });
+    });
+
+    // 表示ボタンのクリックイベント
+    document.querySelectorAll('.show-button').forEach(button => {
+      button.addEventListener('click', function(event) {
+        const draggableElement = this.closest('.draggable');
+        draggableElement.classList.remove('hidden'); // 非表示クラスを削除
+        this.style.display = 'none'; // 表示ボタンを非表示に
+      });
+    });
   </script>
 </body>
 </html>
