@@ -3,52 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interact.js ドラッグ＆ドロップテスト</title>
+  <title>Sortable.js ドラッグ＆ドロップテスト</title>
   <style>
     .flex-box {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      height: 500px;
+      overflow: scroll;
+      gap: 10px;
     }
     .dropzone {
       width: 220px;
-      height: 350px;
-      margin: 10px;
       padding: 10px;
       border: 2px dashed #ccc;
-      display: inline-block;
-      vertical-align: top;
-      position: relative;
       text-align: center;
-      line-height: 180px;
       font-size: 16px;
       color: #7f8c8d;
+      min-height: 150px;
+      position: relative;
     }
     .draggable {
-      width: 200px;
-      height: 330px;
+      width: 100%;
       background-color: #3498db;
       color: white;
-      text-align: center;
       padding: 10px;
-      box-sizing: border-box;
+      margin-bottom: 10px;
       border-radius: 4px;
-      position: absolute;
-      z-index: 10;
-      transform: translate(0, 0);
-      transition: transform 0.3s ease;
-      overflow: hidden;
+      box-sizing: border-box;
+      cursor: move;
+      position: relative;
+      transition: height 0.3s ease;
     }
     .draggable.dragging {
       z-index: 1000;
       background-color: red;
     }
-    .draggable.hidden {
-      visibility: hidden;
-    }
-    .hide-button, .show-button {
+    .hide-button, .show-button-wrapper {
       position: absolute;
       bottom: 10px;
       right: 10px;
+    }
+    .hide-button {
       background-color: #e74c3c;
       border: none;
       color: white;
@@ -56,10 +51,16 @@
       cursor: pointer;
       border-radius: 3px;
     }
-    .show-button {
+    .show-button-wrapper {
       display: none;
-      visibility: visible;
+    }
+    .show-button {
       background-color: #2ecc71;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
     }
     .add-item-button {
       margin-top: 10px;
@@ -69,10 +70,7 @@
       padding: 5px 10px;
       cursor: pointer;
       border-radius: 3px;
-      width: calc(100% - 20px);
-      position: absolute;
-      bottom: 40px;
-      left: 10px;
+      width: 100%;
     }
     ul {
       list-style-type: none;
@@ -96,179 +94,165 @@
       padding: 5px;
       cursor: pointer;
       border-radius: 3px;
+      display: none; /* 初期状態では削除ボタンを非表示に */
     }
   </style>
 </head>
 <body>
-  <div class="flex-box">
-    <div class="dropzone" id="dropzone1">
+  <div class="flex-box" id="sortable-container">
+    <div class="dropzone">
       <div class="draggable" id="draggable1">
-        ドラッグ１
-        <ul>
-          <li>
-            項目 1
-            <button class="remove-item-button">削除</button>
-          </li>
-        </ul>
-        <button class="add-item-button">追加</button>
-        <button class="hide-button">非表示</button>
-        <button class="show-button">表示</button>
+        <div class="content">
+          <h3>ドラッグ1</h3>
+          <ul>
+            <li>
+              項目 1
+            </li>
+          </ul>
+          <button class="add-item-button">追加</button>
+          <button class="hide-button">非表示</button>
+        </div>
+        <div class="show-button-wrapper">
+          <button class="show-button">表示</button>
+        </div>
       </div>
     </div>
-    <div class="dropzone" id="dropzone2">
+    <div class="dropzone">
       <div class="draggable" id="draggable2">
-        ドラッグ2
-        <ul>
-          <li>
-            項目 1
-            <button class="remove-item-button">削除</button>
-          </li>
-        </ul>
-        <button class="add-item-button">追加</button>
-        <button class="hide-button">非表示</button>
-        <button class="show-button">表示</button>
+        <div class="content">
+          <h3>ドラッグ2</h3>
+          <ul>
+            <li>
+              項目 1
+            </li>
+          </ul>
+          <button class="add-item-button">追加</button>
+          <button class="hide-button">非表示</button>
+        </div>
+        <div class="show-button-wrapper">
+          <button class="show-button">表示</button>
+        </div>
       </div>
     </div>
-    <div class="dropzone" id="dropzone3">
+    <div class="dropzone">
       <div class="draggable" id="draggable3">
-        ドラッグ3
-        <ul>
-          <li>
-            項目 1
-            <button class="remove-item-button">削除</button>
-          </li>
-        </ul>
-        <button class="add-item-button">追加</button>
-        <button class="hide-button">非表示</button>
-        <button class="show-button">表示</button>
+        <div class="content">
+          <h3>ドラッグ3</h3>
+          <ul>
+            <li>
+              項目 1
+            </li>
+          </ul>
+          <button class="add-item-button">追加</button>
+          <button class="hide-button">非表示</button>
+        </div>
+        <div class="show-button-wrapper">
+          <button class="show-button">表示</button>
+        </div>
       </div>
     </div>
-    <div class="dropzone" id="dropzone4">
+    <div class="dropzone">
       <div class="draggable" id="draggable4">
-        ドラッグ4
-        <ul>
-          <li>
-            項目 1
-            <button class="remove-item-button">削除</button>
-          </li>
-        </ul>
-        <button class="add-item-button">追加</button>
-        <button class="hide-button">非表示</button>
-        <button class="show-button">表示</button>
+        <div class="content">
+          <h3>ドラッグ4</h3>
+          <ul>
+            <li>
+              項目 1
+            </li>
+          </ul>
+          <button class="add-item-button">追加</button>
+          <button class="hide-button">非表示</button>
+        </div>
+        <div class="show-button-wrapper">
+          <button class="show-button">表示</button>
+        </div>
       </div>
     </div>
-    <div class="dropzone" id="dropzone5">
+    <div class="dropzone">
       <div class="draggable" id="draggable5">
-        ドラッグ5
-        <ul>
-          <li>
-            項目 1
-            <button class="remove-item-button">削除</button>
-          </li>
-        </ul>
-        <button class="add-item-button">追加</button>
-        <button class="hide-button">非表示</button>
-        <button class="show-button">表示</button>
+        <div class="content">
+          <h3>ドラッグ5</h3>
+          <ul>
+            <li>
+              項目 1
+            </li>
+          </ul>
+          <button class="add-item-button">追加</button>
+          <button class="hide-button">非表示</button>
+        </div>
+        <div class="show-button-wrapper">
+          <button class="show-button">表示</button>
+        </div>
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   <script>
-    interact('.draggable')
-      .draggable({
-        inertia: true,
-        listeners: {
-          start(event) {
-            event.target.classList.add('dragging');
-            // ドラッグ開始時の親ドロップゾーンを記憶
-            const parentDropzone = event.target.closest('.dropzone');
-            event.target.setAttribute('data-original-parent', parentDropzone.id);
-          },
-          move(event) {
-            const target = event.target;
-            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+    // Sortable.jsの初期化
+    document.querySelectorAll('.dropzone').forEach((dropzone) => {
+      new Sortable(dropzone, {
+        group: 'shared',
+        animation: 150,
+        onEnd: function (evt) {
+          const item = evt.item;
+          const toContainer = evt.to;
+          const fromContainer = evt.from;
 
-            target.style.transform = `translate(${x}px, ${y}px)`;
-            target.setAttribute('data-x', x);
-            target.setAttribute('data-y', y);
-          },
-          end(event) {
-            const target = event.target;
-            const dropzone = document.elementFromPoint(event.clientX, event.clientY).closest('.dropzone');
-
-            if (!dropzone) {
-              // dropzone外にドロップされた場合、元の位置に戻す
-              resetElement(target);
-            }
-            target.classList.remove('dragging');
+          if (toContainer.children.length > 1) {
+            const itemToSwap = toContainer.children[0] === item ? toContainer.children[1] : toContainer.children[0];
+            fromContainer.appendChild(itemToSwap);
           }
+          item.style.transform = 'translate(0, 0)';
         }
       });
-
-    interact('.dropzone').dropzone({
-      accept: '.draggable',
-      overlap: 0.5,
-      ondrop(event) {
-        const draggableElement = event.relatedTarget;
-        const dropzoneElement = event.target;
-
-        // ドロップゾーンにすでに他の要素がある場合は、ドラッグされた要素と入れ替え
-        const existingElement = dropzoneElement.querySelector('.draggable');
-        if (existingElement && existingElement !== draggableElement) {
-          const parentDropzone = draggableElement.closest('.dropzone');
-          parentDropzone.appendChild(existingElement);
-          resetElement(existingElement);
-        }
-
-        dropzoneElement.appendChild(draggableElement);
-        resetElement(draggableElement);
-      }
     });
-
-    function resetElement(element) {
-      // 元の位置に戻す
-      element.style.transform = 'translate(0, 0)';
-      element.setAttribute('data-x', 0);
-      element.setAttribute('data-y', 0);
-    }
 
     // 非表示ボタンのクリックイベント
     document.querySelectorAll('.hide-button').forEach(button => {
-      button.addEventListener('click', function(event) {
+      button.addEventListener('click', function() {
         const draggableElement = this.closest('.draggable');
-        draggableElement.classList.add('hidden'); // 非表示クラスを追加
-        draggableElement.querySelector('.show-button').style.display = 'inline-block';
+        draggableElement.querySelector('.content').style.display = 'none';  // コンテンツを非表示にする
+        draggableElement.querySelector('.show-button-wrapper').style.display = 'block';  // 表示ボタンを表示する
       });
     });
 
     // 表示ボタンのクリックイベント
     document.querySelectorAll('.show-button').forEach(button => {
-      button.addEventListener('click', function(event) {
+      button.addEventListener('click', function() {
         const draggableElement = this.closest('.draggable');
-        draggableElement.classList.remove('hidden'); // 非表示クラスを削除
-        this.style.display = 'none'; // 表示ボタンを非表示に
+        draggableElement.querySelector('.content').style.display = 'block';  // コンテンツを表示にする
+        draggableElement.querySelector('.show-button-wrapper').style.display = 'none';  // 表示ボタンを非表示にする
       });
     });
 
     // 追加ボタンのクリックイベント
     document.querySelectorAll('.add-item-button').forEach(button => {
-      button.addEventListener('click', function(event) {
+      button.addEventListener('click', function() {
         const ul = this.closest('.draggable').querySelector('ul');
         const newItem = document.createElement('li');
         newItem.innerHTML = '項目 ' + (ul.children.length + 1) + ' <button class="remove-item-button">削除</button>';
         ul.appendChild(newItem);
 
+        // 削除ボタンをすべての`li`に表示
+        ul.querySelectorAll('.remove-item-button').forEach(btn => {
+          btn.style.display = 'inline-block';
+        });
+
         // 新しい削除ボタンにイベントリスナーを追加
         newItem.querySelector('.remove-item-button').addEventListener('click', function() {
           removeListItem(this);
         });
+
+        // `draggable` の高さを調整
+        const draggableElement = this.closest('.draggable');
+        adjustDraggableHeight(draggableElement);
       });
     });
 
     // 削除ボタンのクリックイベント
     document.querySelectorAll('.remove-item-button').forEach(button => {
-      button.addEventListener('click', function(event) {
+      button.addEventListener('click', function() {
         removeListItem(this);
       });
     });
@@ -279,10 +263,27 @@
       const li = button.closest('li');
       if (ul.children.length > 1) {
         ul.removeChild(li);
-      } else {
-        alert('最後の項目は削除できません。');
       }
+
+      // 項目が1つになったら削除ボタンを非表示にする
+      if (ul.children.length === 1) {
+        ul.querySelector('.remove-item-button').style.display = 'none';
+      }
+
+      // `draggable` の高さを調整
+      const draggableElement = button.closest('.draggable');
+      adjustDraggableHeight(draggableElement);
     }
+
+    // `draggable` の高さを調整する関数
+    function adjustDraggableHeight(draggableElement) {
+      draggableElement.style.height = 'auto';
+      const contentHeight = draggableElement.querySelector('.content').offsetHeight;
+      draggableElement.style.height = `${contentHeight + 40}px`; // 40pxの余白を加える
+    }
+
+    // ページ読み込み時に初期の高さを調整
+    document.querySelectorAll('.draggable').forEach(adjustDraggableHeight);
   </script>
 </body>
 </html>
