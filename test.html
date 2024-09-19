@@ -3,130 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkbox and Select Box Options</title>
+    <title>Dynamic Table with select2 and Checkboxes</title>
     <style>
         /* チェックボックスを横並びにするスタイル */
         .checkbox-container {
             display: flex;
             gap: 10px;  /* チェックボックスの間にスペースを追加 */
         }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
     </style>
+    <!-- select2のCSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
 
 <!-- チェックボックスを横並びに配置 -->
 <div class="checkbox-container">
     <label>
-        <input type="checkbox" checked> Operational Data
+        <input type="checkbox" class="group-checkbox" data-group="operational-data" checked> Operational Data
     </label>
     <label>
-        <input type="checkbox" checked> Abnormal Data
+        <input type="checkbox" class="group-checkbox" data-group="abnormal-data" checked> Abnormal Data
     </label>
     <label>
-        <input type="checkbox" checked> Warning Data
+        <input type="checkbox" class="group-checkbox" data-group="warning-data" checked> Warning Data
     </label>
     <label>
-        <input type="checkbox" checked> Batch Data
+        <input type="checkbox" class="group-checkbox" data-group="batch-data" checked> Batch Data
     </label>
 </div>
 
 <br><br>
 
-<!-- セレクトボックス -->
-<select class='variable-box' size="10">
-    <option selected></option>
-    <option class="operational-data">Operational Option 1</option>
-    <option class="operational-data">Operational Option 2</option>
-    <option class="abnormal-data">Abnormal Option 1</option>
-    <option class="abnormal-data">Abnormal Option 2</option>
-    <option class="warning-data">Warning Option 1</option>
-    <option class="warning-data">Warning Option 2</option>
-    <option class="batch-data">Batch Option 1</option>
-    <option class="batch-data">Batch Option 2</option>
-</select>
+<!-- テーブル -->
+<table id="dynamicTable">
+    <thead>
+        <tr>
+            <th>Select Box</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- 動的に追加される行 -->
+    </tbody>
+</table>
+
+<!-- ボタン -->
+<button id="addRowBtn">Add Row</button>
+
+<!-- jQueryとselect2のJS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.querySelector('#dynamicTable tbody');
+    const addRowBtn = document.getElementById('addRowBtn');
 
-    // 初期設定関数
-    function initCheckboxSelectInteraction(checkboxContainerSelector, selectBoxSelector, categoryClasses) {
-        const checkboxContainer = document.querySelector(checkboxContainerSelector);
-        const selectBox = document.querySelector(selectBoxSelector);
-        const checkboxElements = checkboxContainer.querySelectorAll('input[type="checkbox"]');
+    // カテゴリー名を定義
+    const initialOptions = [
+        { value: 'option1-1', text: 'Operational Option 1', className: 'operational-data' },
+        { value: 'option1-2', text: 'Operational Option 2', className: 'operational-data' },
+        { value: 'option2-1', text: 'Abnormal Option 1', className: 'abnormal-data' },
+        { value: 'option2-2', text: 'Abnormal Option 2', className: 'abnormal-data' },
+        { value: 'option3-1', text: 'Warning Option 1', className: 'warning-data' },
+        { value: 'option3-2', text: 'Warning Option 2', className: 'warning-data' },
+        { value: 'option4-1', text: 'Batch Option 1', className: 'batch-data' },
+        { value: 'option4-2', text: 'Batch Option 2', className: 'batch-data' }
+    ];
 
-        // セレクトボックス内の初期状態を保存
-        const initialOptions = saveInitialOptions(selectBox);
-
-        // チェックボックスと対応するカテゴリークラスを配列にマッピング
-        const checkboxes = Array.from(checkboxElements).map((checkbox, index) => ({
-            checkbox: checkbox,
-            categoryClass: categoryClasses[index] // カテゴリークラスを直接マッピング
-        }));
-
-        // チェックボックスのリスナーを設定
-        setupCheckboxListeners(checkboxes, selectBox, initialOptions);
+    // チェックボックスの状態を取得する関数
+    function getActiveGroups() {
+        const checkboxes = document.querySelectorAll('.group-checkbox');
+        return Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.dataset.group);
     }
 
-    // 初期状態のオプションを保存する関数
-    function saveInitialOptions(selectBox) {
-        return Array.from(selectBox.options).map(option => ({
-            value: option.value,
-            text: option.textContent,
-            className: option.className
-        }));
-    }
+    // 新しい行をテーブルに追加する関数
+    function addRow() {
+        const activeGroups = getActiveGroups();
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>
+                <select class="variable-box" size="10" multiple>
+                    ${generateOptions(activeGroups)}
+                </select>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
 
-    // オプションの順番を初期状態に保つための関数
-    function restoreOptions(selectBox, initialOptions, activeGroups) {
-        selectBox.innerHTML = ''; // 一旦全てクリア
-
-        // activeGroupsに基づいて、初期オプションを順番に再追加
-        initialOptions.forEach(option => {
-            if (activeGroups.includes(option.className)) {
-                const newOption = document.createElement('option');
-                newOption.value = option.value;
-                newOption.textContent = option.text;
-                newOption.className = option.className;
-                selectBox.appendChild(newOption);
-            }
+        // select2の適用
+        $(newRow).find('.variable-box').select2({
+            dropdownAutoWidth: true,
+            width: '100%',
+            minimumResultsForSearch: -1
         });
     }
 
-    // チェックボックスのイベントを設定する関数
-    function setupCheckboxListeners(checkboxes, selectBox, initialOptions) {
-        let activeGroups = checkboxes.map(({ checkbox, categoryClass }) => checkbox.checked ? categoryClass : null).filter(Boolean);
+    // オプションを生成する関数
+    function generateOptions(activeGroups) {
+        return initialOptions
+            .filter(option => activeGroups.includes(option.className))
+            .map(option => `<option class="${option.className}" value="${option.value}">${option.text}</option>`)
+            .join('');
+    }
 
-        checkboxes.forEach(({ checkbox, categoryClass }) => {
-            checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    // チェックがついた場合、アクティブグループに追加
-                    if (!activeGroups.includes(categoryClass)) {
-                        activeGroups.push(categoryClass);
-                    }
-                } else {
-                    // チェックが外れた場合、アクティブグループから削除
-                    const groupIndex = activeGroups.indexOf(categoryClass);
-                    if (groupIndex !== -1) {
-                        activeGroups.splice(groupIndex, 1);
-                    }
-                }
+    // チェックボックスの状態に応じて全てのセレクトボックスのオプションを更新する関数
+    function updateAllSelectBoxes() {
+        const activeGroups = getActiveGroups();
+        document.querySelectorAll('.variable-box').forEach(selectBox => {
+            const selectElement = $(selectBox);
+            selectElement.empty(); // 既存のオプションをクリア
+            const optionsHTML = generateOptions(activeGroups);
+            selectElement.append(optionsHTML);
 
-                // 初期状態に基づいてオプションを再構築して並べ替え
-                restoreOptions(selectBox, initialOptions, activeGroups);
+            // select2を再初期化
+            selectElement.select2({
+                dropdownAutoWidth: true,
+                width: '100%',
+                minimumResultsForSearch: -1
             });
         });
     }
 
-    // カテゴリー名を定義
-    const categoryClasses = [
-        'operational-data', // Operational Data
-        'abnormal-data',    // Abnormal Data
-        'warning-data',     // Warning Data
-        'batch-data'        // Batch Data
-    ];
+    // 新しい行を追加するボタンのクリックイベント
+    addRowBtn.addEventListener('click', addRow);
 
-    // 初期化関数を呼び出す
-    initCheckboxSelectInteraction('.checkbox-container', '.variable-box', categoryClasses);
+    // チェックボックスの変更イベント
+    document.querySelector('.checkbox-container').addEventListener('change', updateAllSelectBoxes);
 });
 </script>
 
