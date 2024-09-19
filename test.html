@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkbox and Select Box Options</title>
+    <style>
+        /* チェックボックスを横並びにするスタイル */
+        .checkbox-container {
+            display: flex;
+            gap: 10px;  /* チェックボックスの間にスペースを追加 */
+        }
+    </style>
+</head>
+<body>
+
+<!-- チェックボックスを横並びに配置 -->
+<div class="checkbox-container">
+    <label>
+        <input type="checkbox" checked> Option Group 1
+    </label>
+    <label>
+        <input type="checkbox" checked> Option Group 2
+    </label>
+    <label>
+        <input type="checkbox" checked> Option Group 3
+    </label>
+    <label>
+        <input type="checkbox" checked> Option Group 4
+    </label>
+</div>
+
+<br><br>
+
+<!-- セレクトボックス -->
+<select id="selectBox" size="10">
+    <option value="option1-1" class="group1">Option 1-1</option>
+    <option value="option1-2" class="group1">Option 1-2</option>
+    <option value="option2-1" class="group2">Option 2-1</option>
+    <option value="option2-2" class="group2">Option 2-2</option>
+    <option value="option3-1" class="group3">Option 3-1</option>
+    <option value="option3-2" class="group3">Option 3-2</option>
+    <option value="option4-1" class="group4">Option 4-1</option>
+    <option value="option4-2" class="group4">Option 4-2</option>
+</select>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 初期設定関数
+    function initCheckboxSelectInteraction(checkboxContainerSelector, selectBoxSelector, optionClassPrefix) {
+        const checkboxContainer = document.querySelector(checkboxContainerSelector);
+        const selectBox = document.querySelector(selectBoxSelector);
+        const checkboxElements = checkboxContainer.querySelectorAll('input[type="checkbox"]');
+
+        // セレクトボックス内の初期状態を保存
+        const initialOptions = saveInitialOptions(selectBox);
+
+        // チェックボックスと対応するグループクラスを配列にマッピング
+        const checkboxes = Array.from(checkboxElements).map((checkbox, index) => ({
+            checkbox: checkbox,
+            groupClass: `${optionClassPrefix}${index + 1}`
+        }));
+
+        // チェックボックスのリスナーを設定
+        setupCheckboxListeners(checkboxes, selectBox, initialOptions);
+    }
+
+    // 初期状態のオプションを保存する関数
+    function saveInitialOptions(selectBox) {
+        return Array.from(selectBox.options).map(option => ({
+            value: option.value,
+            text: option.textContent,
+            className: option.className
+        }));
+    }
+
+    // オプションの順番を初期状態に保つための関数
+    function restoreOptions(selectBox, initialOptions, activeGroups) {
+        selectBox.innerHTML = ''; // 一旦全てクリア
+
+        // activeGroupsに基づいて、初期オプションを順番に再追加
+        initialOptions.forEach(option => {
+            if (activeGroups.includes(option.className)) {
+                const newOption = document.createElement('option');
+                newOption.value = option.value;
+                newOption.textContent = option.text;
+                newOption.className = option.className;
+                selectBox.appendChild(newOption);
+            }
+        });
+    }
+
+    // チェックボックスのイベントを設定する関数
+    function setupCheckboxListeners(checkboxes, selectBox, initialOptions) {
+        let activeGroups = checkboxes.map(({ checkbox, groupClass }) => checkbox.checked ? groupClass : null).filter(Boolean);
+
+        checkboxes.forEach(({ checkbox, groupClass }) => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // チェックがついた場合、アクティブグループに追加
+                    if (!activeGroups.includes(groupClass)) {
+                        activeGroups.push(groupClass);
+                    }
+                } else {
+                    // チェックが外れた場合、アクティブグループから削除
+                    const groupIndex = activeGroups.indexOf(groupClass);
+                    if (groupIndex !== -1) {
+                        activeGroups.splice(groupIndex, 1);
+                    }
+                }
+
+                // 初期状態に基づいてオプションを再構築して並べ替え
+                restoreOptions(selectBox, initialOptions, activeGroups);
+            });
+        });
+    }
+
+    // 初期化関数を呼び出す
+    initCheckboxSelectInteraction('.checkbox-container', '#selectBox', 'group');
+});
+</script>
+
+</body>
+</html>
