@@ -1,1 +1,114 @@
-!
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <div class="js-accordion-default-1">
+    <div>
+      <h4>判定対象データ</h4>
+      <ul>
+        <li>
+          <label>
+            <input type="checkbox" class="alert-checkbox" checked>
+            <span>稼働データ</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="checkbox" class="alert-checkbox" checked>
+            <span>以上データ</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="checkbox" class="alert-checkbox" checked>
+            <span>警告データ</span>
+          </label>
+        </li>
+        <li>
+          <label>
+            <input type="checkbox" class="alert-checkbox" checked>
+            <span>バッチデータ</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+    <div class="p-table-box__table schedule-judgement judgement-1">
+      <table class="c-tbl judgement">
+        <thead>
+          <tr>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>
+              <select class="c-form-select is-select2 has-no-search variable-selectbox">
+                <option value="" selected></option>
+                <option class="group-checkbox" data-group="operational-data" value="稼働データカテゴリの項目１">稼働データカテゴリの項目１</option>
+                <option class="group-checkbox" data-group="operational-data" value="稼働データカテゴリの項目２">稼働データカテゴリの項目２</option>
+                <option class="group-checkbox" data-group="abnormal-data" value="異常データカテゴリの項目１">異常データカテゴリの項目１</option>
+                <option class="group-checkbox" data-group="abnormal-data" value="異常データカテゴリの項目２">異常データカテゴリの項目２</option>
+                <option class="group-checkbox" data-group="warning-data" value="警告データカテゴリの項目１">警告データカテゴリの項目１</option>
+                <option class="group-checkbox" data-group="warning-data" value="警告データカテゴリの項目２">警告データカテゴリの項目２</option>
+                <option class="group-checkbox" data-group="batch-data" value="バッチデータカテゴリの項目">バッチデータカテゴリの項目</option>
+                <option class="group-checkbox" data-group="batch-data" value="バッチデータカテゴリの項目">バッチデータカテゴリの項目</option>
+              </select>
+            </td>
+            <td>
+              <select class="c-form-select is-select2 has-no-search">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </td>
+            <td>
+              <select class="c-form-select is-select2 has-no-search">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </td>
+            <td>
+              <select class="c-form-select is-select2 has-no-search">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </td>
+            <td>
+              <select class="c-form-select is-select2 has-no-search">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </td>
+            <td>
+              <button type="button" class="c-btn-icon remove-btn">
+                <span class="material-icons-round"> delete </span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="p-table-box__add-button">
+      <button class="c-btn schedule-judgement-add-row-1">
+        <span class="material-icons-round"> add </span>
+        追加
+      </button>
+    </div>
+  </div>
+</body>
+</html>

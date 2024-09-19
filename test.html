@@ -36,67 +36,61 @@
 <body>
 
 <!-- セクション1 -->
-<div class="section">
-    <div class="checkbox-container" id="checkboxContainer1">
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="operational-data" checked> Operational Data
-        </label>
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="abnormal-data" checked> Abnormal Data
-        </label>
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="warning-data" checked> Warning Data
-        </label>
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="batch-data" checked> Batch Data
-        </label>
+<div class="js-accordion-default-1">
+    <div>
+        <h4>判定対象データ</h4>
+        <ul id="checkboxContainer1">
+            <li>
+                <label>
+                    <input type="checkbox" class="alert-checkbox" data-group="operational-data" checked>
+                    <span>稼働データ</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="checkbox" class="alert-checkbox" data-group="abnormal-data" checked>
+                    <span>異常データ</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="checkbox" class="alert-checkbox" data-group="warning-data" checked>
+                    <span>警告データ</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="checkbox" class="alert-checkbox" data-group="batch-data" checked>
+                    <span>バッチデータ</span>
+                </label>
+            </li>
+        </ul>
     </div>
-    <br><br>
-    <table id="dynamicTable1">
-        <thead>
-            <tr>
-                <th>Select Box</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- 動的に追加される行 -->
-        </tbody>
-    </table>
-    <button id="addRowBtn1">Add Row to Section 1</button>
-</div>
-
-<br><br>
-
-<!-- セクション2（別のセクションとして流用） -->
-<div class="section">
-    <div class="checkbox-container" id="checkboxContainer2">
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="operational-data" checked> Operational Data
-        </label>
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="abnormal-data" checked> Abnormal Data
-        </label>
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="warning-data" checked> Warning Data
-        </label>
-        <label>
-            <input type="checkbox" class="group-checkbox" data-group="batch-data" checked> Batch Data
-        </label>
+    <div class="p-table-box__table schedule-judgement judgement-1">
+        <table id="dynamicTable1" class="c-tbl judgement">
+            <thead>
+                <tr>
+                    <th>番号</th>
+                    <th>データ選択</th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>アクション</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 動的に追加される行 -->
+            </tbody>
+        </table>
     </div>
-    <br><br>
-    <table id="dynamicTable2">
-        <thead>
-            <tr>
-                <th>Select Box</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- 動的に追加される行 -->
-        </tbody>
-    </table>
-    <button id="addRowBtn2">Add Row to Section 2</button>
+    <div class="p-table-box__add-button">
+        <button class="c-btn schedule-judgement-add-row-1" id="addRowBtn1">
+            <span class="material-icons-round"> add </span>
+            追加
+        </button>
+    </div>
 </div>
 
 <!-- jQueryとselect2のJS -->
@@ -107,14 +101,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     // カテゴリー名を定義
     const initialOptions = [
-        { value: 'option1-1', text: 'Operational Option 1', className: 'operational-data' },
-        { value: 'option1-2', text: 'Operational Option 2', className: 'operational-data' },
-        { value: 'option2-1', text: 'Abnormal Option 1', className: 'abnormal-data' },
-        { value: 'option2-2', text: 'Abnormal Option 2', className: 'abnormal-data' },
-        { value: 'option3-1', text: 'Warning Option 1', className: 'warning-data' },
-        { value: 'option3-2', text: 'Warning Option 2', className: 'warning-data' },
-        { value: 'option4-1', text: 'Batch Option 1', className: 'batch-data' },
-        { value: 'option4-2', text: 'Batch Option 2', className: 'batch-data' }
+        { value: '稼働データカテゴリの項目１', text: '稼働データカテゴリの項目１', className: 'operational-data' },
+        { value: '稼働データカテゴリの項目２', text: '稼働データカテゴリの項目２', className: 'operational-data' },
+        { value: '異常データカテゴリの項目１', text: '異常データカテゴリの項目１', className: 'abnormal-data' },
+        { value: '異常データカテゴリの項目２', text: '異常データカテゴリの項目２', className: 'abnormal-data' },
+        { value: '警告データカテゴリの項目１', text: '警告データカテゴリの項目１', className: 'warning-data' },
+        { value: '警告データカテゴリの項目２', text: '警告データカテゴリの項目２', className: 'warning-data' },
+        { value: 'バッチデータカテゴリの項目', text: 'バッチデータカテゴリの項目', className: 'batch-data' },
+        { value: 'バッチデータカテゴリの項目', text: 'バッチデータカテゴリの項目', className: 'batch-data' }
     ];
 
     // 汎用関数を定義
@@ -125,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // チェックボックスの状態を取得する関数
         function getActiveGroups() {
-            const checkboxes = checkboxContainer.querySelectorAll('.group-checkbox');
+            const checkboxes = checkboxContainer.querySelectorAll('.alert-checkbox');
             return Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.dataset.group);
         }
 
@@ -134,19 +128,50 @@ document.addEventListener('DOMContentLoaded', function() {
             const activeGroups = getActiveGroups();
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
+                <td></td>
                 <td>
-                    <select class="variable-box" size="10" multiple>
+                    <select class="c-form-select is-select2 has-no-search variable-selectbox">
                         ${generateOptions(activeGroups)}
                     </select>
                 </td>
                 <td>
-                    <button class="remove-btn">Remove</button>
+                    <select class="c-form-select is-select2 has-no-search">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="c-form-select is-select2 has-no-search">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="c-form-select is-select2 has-no-search">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="c-form-select is-select2 has-no-search">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="button" class="c-btn-icon remove-btn">
+                        <span class="material-icons-round"> delete </span>
+                    </button>
                 </td>
             `;
             tableBody.appendChild(newRow);
 
             // select2の適用
-            $(newRow).find('.variable-box').select2({
+            $(newRow).find('.c-form-select').select2({
                 dropdownAutoWidth: true,
                 width: '100%',
                 minimumResultsForSearch: -1
@@ -156,6 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
             newRow.querySelector('.remove-btn').addEventListener('click', function() {
                 removeRow(this);
             });
+
+            // 行番号を更新
+            updateRowNumbers();
         }
 
         // オプションを生成する関数
@@ -172,15 +200,23 @@ document.addEventListener('DOMContentLoaded', function() {
         function removeRow(button) {
             if (tableBody.rows.length > 1) {
                 button.closest('tr').remove();
+                updateRowNumbers(); // 行番号を更新
             } else {
                 alert("This is the last row and cannot be removed.");
             }
         }
 
+        // 行番号を更新する関数
+        function updateRowNumbers() {
+            tableBody.querySelectorAll('tr').forEach((row, index) => {
+                row.querySelector('td:first-child').textContent = index + 1;
+            });
+        }
+
         // チェックボックスの状態に応じて全てのセレクトボックスのオプションを更新する関数
         function updateAllSelectBoxes() {
             const activeGroups = getActiveGroups();
-            document.querySelectorAll(`#${tableId} .variable-box`).forEach(selectBox => {
+            document.querySelectorAll(`#${tableId} .variable-selectbox`).forEach(selectBox => {
                 const selectedValues = $(selectBox).val();  // 現在選択されている値を取得
                 const optionsHTML = generateOptions(activeGroups);
 
@@ -206,9 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
         checkboxContainer.addEventListener('change', updateAllSelectBoxes);
     }
 
-    // 各セクションを初期化
+    // セクションを初期化
     initializeSection('checkboxContainer1', 'dynamicTable1', 'addRowBtn1');
-    initializeSection('checkboxContainer2', 'dynamicTable2', 'addRowBtn2');
 });
 </script>
 
