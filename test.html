@@ -22,6 +22,13 @@
             padding: 10px;
             text-align: left;
         }
+        .remove-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
     <!-- select2のCSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
@@ -51,6 +58,7 @@
     <thead>
         <tr>
             <th>Select Box</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -98,6 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${generateOptions(activeGroups)}
                 </select>
             </td>
+            <td>
+                <button class="remove-btn">Remove</button>
+            </td>
         `;
         tableBody.appendChild(newRow);
 
@@ -107,6 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
             width: '100%',
             minimumResultsForSearch: -1
         });
+
+        // 削除ボタンにイベントを追加
+        newRow.querySelector('.remove-btn').addEventListener('click', function() {
+            removeRow(this);
+        });
     }
 
     // オプションを生成する関数
@@ -115,6 +131,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .filter(option => activeGroups.includes(option.className))
             .map(option => `<option class="${option.className}" value="${option.value}">${option.text}</option>`)
             .join('');
+    }
+
+    // 行を削除する関数
+    function removeRow(button) {
+        if (tableBody.rows.length > 1) {
+            button.closest('tr').remove();
+        } else {
+            alert("This is the last row and cannot be removed.");
+        }
     }
 
     // チェックボックスの状態に応じて全てのセレクトボックスのオプションを更新する関数
@@ -134,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // 初期状態で1行追加
+    addRow();
 
     // 新しい行を追加するボタンのクリックイベント
     addRowBtn.addEventListener('click', addRow);
